@@ -20,13 +20,23 @@ def _pdfToImages(pdf,path):
 # _pdfToImages(pdf_2,path_2)
 
 
-img = cv2.imread("bubble_sheet_293_0_pages/1.png") 
+img = cv2.imread("bubble_sheet_293_0_pages/test.png") 
 
 def detect_qr(img):
     qr = decode(img)
-    return qr
+    # print(qr[0][4])
+    modified_img = img
+    if(qr[0][4]==1):
+        modified_img = cv2.rotate(img, cv2.ROTATE_90_COUNTERCLOCKWISE)
+    elif(qr[0][4]==2):
+        modified_img = cv2.rotate(img, cv2.ROTATE_180)
+    elif(qr[0][4]==3):
+        modified_img = cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE)
+    modified_qr = decode(modified_img)
+    return modified_qr,modified_img
 
-qr = detect_qr(img)
+modified_qr,modified_img = detect_qr(img)
+# print(decode(modified_img))
 
 
 def draw_rect_qr(qr,img):
@@ -40,4 +50,4 @@ def draw_rect_qr(qr,img):
     cv2.waitKey(0)
     cv2.destroyAllWindows("q")
 
-draw_rect_qr(qr,img)
+draw_rect_qr(modified_qr,modified_img)
