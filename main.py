@@ -50,7 +50,7 @@ def draw_rect_qr(qr,img):
     return qr_img
 
 def draw_circles(img,circles,params,offset):
-    print(len(circles[0]))
+    # print(len(circles[0]))
     for i in circles[0,:]:
         # draw the outer circle
         img = cv2.circle(img,(i[0]+params["left"],i[1]+params["top"]+offset),i[2],(255,0,0),1)
