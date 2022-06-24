@@ -51,6 +51,7 @@ def draw_rect_qr(qr,img):
 
 def draw_circles(img,circles,params,offset):
     # print(len(circles[0]))
+    circles = np.uint16(np.around(circles))
     for i in circles[0,:]:
         # draw the outer circle
         img = cv2.circle(img,(i[0]+params["left"],i[1]+params["top"]+offset),i[2],(255,0,0),1)
@@ -72,9 +73,8 @@ def detect_regions(img,params,num_ques):
     for i in range(num_ques):
         region = new_img[params["top"]+offset:params["top"]+params["height"]+offset,params["left"]:params["left"]+params["width_nmcq"]]
         circles = cv2.HoughCircles(region,cv2.HOUGH_GRADIENT,1.5,22,param1=300,param2=0.5,minRadius=6,maxRadius=8)
-        circles = np.uint16(np.around(circles))
         # print(type(circles))
-        if(len(circles[0])==4):
+        if(circles is not None and len(circles[0])==4):
             # highlight circles 
             img = draw_circles(img,circles,params,offset)
             
