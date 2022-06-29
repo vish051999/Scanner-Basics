@@ -1,6 +1,7 @@
 import json
 import fitz
 import cv2
+import random
 from utils import detect_qr,draw_rect_qr,draw_circles
 
 
@@ -25,7 +26,7 @@ def _pdfToImages(event,context):
     for i in range(num_pages):
         pix = pdf[1].getPixmap(alpha = False,colorspace=fitz.csGRAY, matrix=image_matrix)
         pix.writePNG(f"{dest_path}/{i+1}.png")
-    return {"statusCode":200,"body":json.dumps({"message":"Success"})}
+    return {"statusCode":200,"body":json.dumps({"message":"Success","output_path":f"/{dest_path}"})}
 
 
 def _detectRegions(event,context):
@@ -58,6 +59,8 @@ def _detectRegions(event,context):
             img = cv2.rectangle(img,(params["left"],params["top"]+offset),(params["left"]+params["width_nmcq"],params["top"]+params["height"]+offset),color=(0,255,0),thickness=1)
 
         offset+=params["offset"]
+    
+    # img_num = random.randint(1,50)
 
-    cv2.imwrite("output.png",img)
-    return {"statusCode":200,"body":json.dumps({"message":"Success"})}
+    cv2.imwrite(f"dataset/highlighted_images/output_image.png",img)
+    return {"statusCode":200,"body":json.dumps({"message":"Success","ouput_path":f"/dataset/highlighted_images/output_image.png"})}
