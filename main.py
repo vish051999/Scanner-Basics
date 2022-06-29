@@ -57,6 +57,7 @@ def draw_circles(img,circles,params,offset):
         img = cv2.circle(img,(i[0]+params["left"],i[1]+params["top"]+offset),i[2],(255,0,0),1)
     return img
 
+
  
 params = {"left":181,"top":130,"height":15,"width_mcq":86,"width_nmcq":147,"offset":18}
 

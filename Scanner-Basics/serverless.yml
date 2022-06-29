@@ -1,0 +1,34 @@
+service: Scanner-Basics
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.8
+
+plugins:
+  - serverless-offline
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - http:
+          path: /demo
+          method: GET
+          cors: false
+  _pdfToImages:
+    handler: handler._pdfToImages
+    events:
+      - http:
+          path: /split_pdf
+          method: POST
+          cors: false
+  _detectRegions:
+    handler: handler._detectRegions
+    events:
+      - http:
+          path: /detect_regions
+          method: POST
+          cors: false
+  
