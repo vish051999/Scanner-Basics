@@ -2,45 +2,37 @@ import json
 import fitz
 import cv2
 import random
-from utils import detect_qr,draw_rect_qr,draw_circles
+from src.utils import detect_qr,draw_rect_qr,draw_circles
 
 
-def hello(event, context):
-    body = {
-        "message": "Go Serverless v3.0! Your function executed successfully!",
-        "input": event,
-    }
-
-    return {"statusCode": 200, "body": json.dumps(body)}
-
-def _pdfToImages(event,context):
+def split_pdf(event,context):
     req_body = json.loads(event["body"])
     source_path = req_body["source_path"]
     dest_path = req_body["dest_path"]
 
     pdf = fitz.open(source_path)
     num_pages = pdf.pageCount
-    print(num_pages)
+    # print(num_pages)
     image_matrix = fitz.Matrix(fitz.Identity)
-    image_matrix.preScale(1, 1)
+    # image_matrix.preScale(1, 1)
     for i in range(num_pages):
-        pix = pdf[1].getPixmap(alpha = False,colorspace=fitz.csGRAY, matrix=image_matrix)
+        pix = pdf[i].getPixmap(alpha = False,colorspace=fitz.csGRAY, matrix=image_matrix)
         pix.writePNG(f"{dest_path}/{i+1}.png")
     return {"statusCode":200,"body":json.dumps({"message":"Success","output_path":f"/{dest_path}"})}
 
 
-def _detectRegions(event,context):
+def detect_regions(event,context):
     req_body = json.loads(event["body"])
     img_path = req_body["img_path"]
     num_ques = req_body["num_ques"]
     
     img = cv2.imread(img_path)
 
-    params = {"left":181,"top":130,"height":15,"width_mcq":86,"width_nmcq":147,"offset":18}
+    params = {"left":181,"top":129,"height":16,"width_mcq":87,"width_nmcq":147,"offset":18}
 
     # get the image with QR code
-    modified_qr,modified_img = detect_qr(img)
-    img = draw_rect_qr(modified_qr,modified_img)
+    qr,modified_img = detect_qr(img = img)
+    img = draw_rect_qr(qr = qr,img = modified_img)
 
     # Detecting Regions 
     offset = 0
@@ -52,7 +44,7 @@ def _detectRegions(event,context):
         # print(type(circles))
         if(circles is not None and len(circles[0])==4):
             # highlight circles 
-            img = draw_circles(img,circles,params,offset)
+            img = draw_circles(img = img,circles = circles,params = params,offset = offset)
             
             img = cv2.rectangle(img,(params["left"],params["top"]+offset),(params["left"]+params["width_mcq"],params["top"]+params["height"]+offset),color=(0,255,0),thickness=1)
         else:
@@ -62,5 +54,7 @@ def _detectRegions(event,context):
     
     # img_num = random.randint(1,50)
 
-    cv2.imwrite(f"dataset/highlighted_images/output_image.png",img)
-    return {"statusCode":200,"body":json.dumps({"message":"Success","ouput_path":f"/dataset/highlighted_images/output_image.png"})}
+    output_path = f"results/output.png"
+    cv2.imwrite(output_path,img)
+
+    return {"statusCode":200,"body":json.dumps({"message":"Success","ouput_path":f"/{output_path}"})}

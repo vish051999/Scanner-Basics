@@ -10,22 +10,15 @@ plugins:
   - serverless-offline
 
 functions:
-  hello:
-    handler: handler.hello
-    events:
-      - http:
-          path: /demo
-          method: GET
-          cors: false
-  _pdfToImages:
-    handler: handler._pdfToImages
+  split_pdf:
+    handler: handler.split_pdf
     events:
       - http:
           path: /split_pdf
           method: POST
           cors: false
-  _detectRegions:
-    handler: handler._detectRegions
+  detect_regions:
+    handler: handler.detect_regions
     events:
       - http:
           path: /detect_regions
