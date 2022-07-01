@@ -36,19 +36,19 @@ def detect_regions(event,context):
 
     # Detecting Regions 
     offset = 0
-    new_img = cv2.medianBlur(img,3)
+    new_img = cv2.medianBlur(img,ksize=3)
     new_img = cv2.cvtColor(new_img,cv2.COLOR_BGR2GRAY)
     for i in range(num_ques):
         region = new_img[params["top"]+offset:params["top"]+params["height"]+offset,params["left"]:params["left"]+params["width_nmcq"]]
-        circles = cv2.HoughCircles(region,cv2.HOUGH_GRADIENT,1.5,22,param1=300,param2=0.5,minRadius=6,maxRadius=8)
+        circles = cv2.HoughCircles(region,cv2.HOUGH_GRADIENT,dp=1.5,minDist=22,param1=300,param2=0.5,minRadius=6,maxRadius=8)
         # print(type(circles))
         if(circles is not None and len(circles[0])==4):
             # highlight circles 
             img = draw_circles(img = img,circles = circles,params = params,offset = offset)
             
-            img = cv2.rectangle(img,(params["left"],params["top"]+offset),(params["left"]+params["width_mcq"],params["top"]+params["height"]+offset),color=(0,255,0),thickness=1)
+            img = cv2.rectangle(img=img,pt1=(params["left"],params["top"]+offset),pt2=(params["left"]+params["width_mcq"],params["top"]+params["height"]+offset),color=(0,255,0),thickness=1)
         else:
-            img = cv2.rectangle(img,(params["left"],params["top"]+offset),(params["left"]+params["width_nmcq"],params["top"]+params["height"]+offset),color=(0,255,0),thickness=1)
+            img = cv2.rectangle(img=img,pt1=(params["left"],params["top"]+offset),pt2=(params["left"]+params["width_nmcq"],params["top"]+params["height"]+offset),color=(0,255,0),thickness=1)
 
         offset+=params["offset"]
     

@@ -35,7 +35,7 @@ def draw_rect_qr(qr,img):
     color = (255,0,0)
     thickness = 2
 
-    qr_img = cv2.rectangle(img,start,end,color,thickness)
+    qr_img = cv2.rectangle(img=img,pt1=start,pt2=end,color=color,thickness=thickness)
     return qr_img
 
 def draw_circles(img,circles,params,offset):
@@ -47,6 +47,6 @@ def draw_circles(img,circles,params,offset):
         radius = i[2]
 
         # draw the outer circle
-        img = cv2.circle(img,(center["x"]+params["left"],center["y"]+params["top"]+offset),radius,(0,255,255),2)
+        img = cv2.circle(img=img,center=(center["x"]+params["left"],center["y"]+params["top"]+offset),radius=radius,color=(0,255,255),thickness=2)
     return img
 
